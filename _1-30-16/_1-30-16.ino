@@ -1,7 +1,7 @@
 #include <Wire.h>
 #include <Adafruit_NeoPixel.h>
 #define PIN 9
-#define numPixels 74
+#define numPixels 73 // we cut off a corner light
 
 typedef struct {
   int pos;
@@ -274,14 +274,12 @@ void allThrough() {
 
 void loopThrough(Spr_mover *spr) {
 
-  //  for (int i = 0; i < SPR_SIZE; i++) {
   moveSprite(spr);
 
   if (spr->pos == numPixels && spr->dir)
     spr->pos = 0;
   if (spr->pos + spr->size == 0 && !spr->dir)
     spr->pos = numPixels - spr->size;
-  //  }
 }
 
 
@@ -312,19 +310,10 @@ boolean inLocationFade(int pixel) {
       inLoc[var].pos = spr[i].pos;
       inLoc[var].dir = spr[i].dir;
       inLoc[var].size = spr[i].size;
-      //      inLoc[var].r = spr[i].r;
-      //      inLoc[var].g = spr[i].g;
-      //      inLoc[var].b = spr[i].b;
       if (inLoc[var].dir) {
-        //        if (inLoc[var].pos == pixel) {
-        //          inLoc[var].r = spr[i].r;
-        //          inLoc[var].g = spr[i].g;
-        //          inLoc[var].b = spr[i].b;
-        //        } else {
         inLoc[var].r = (int)(spr[i].r * ((double)(pixel - inLoc[var].pos) / inLoc[var].size));
         inLoc[var].g = (int)(spr[i].g * ((double)(pixel - inLoc[var].pos) / inLoc[var].size));
         inLoc[var].b = (int)(spr[i].b * ((double)(pixel - inLoc[var].pos) / inLoc[var].size));
-        //        }
       }
       else {
         if (inLoc[var].pos == pixel) {
@@ -491,8 +480,6 @@ void loop() {
   }
   else
     loopCounter++;
-
-  num = 4;
   switch (num) {
     case 0:
       fadeFromTo(0, 10, 0, 0, 200, 0);
@@ -534,7 +521,6 @@ void loop() {
       draw2();
       strip.show();
       delay(20);
-      break;
       break;
   }
 }
