@@ -1,7 +1,7 @@
 #include <Wire.h>
 #include <Adafruit_NeoPixel.h>
 #define PIN 9
-#define numPixels 73 // we cut off a corner light
+#define numPixels 72 // we cut off a corner light, (not two) but it seems to work with 72
 
 typedef struct {
   int pos;
@@ -28,7 +28,6 @@ Spr_mover colorBG = { -1, false, -1, 0, 0, 0};
 #define SPR_SIZE (sizeof(spr)/sizeof(Spr_mover))
 Spr_mover inLoc[SPR_SIZE];
 Adafruit_NeoPixel strip = Adafruit_NeoPixel(numPixels, PIN, NEO_GRB + NEO_KHZ800);
-Adafruit_NeoPixel strip2 = Adafruit_NeoPixel(120, PIN, NEO_GRB + NEO_KHZ800);
 int rCount = 0;
 int r1 = -1;
 int r2 = -1;
@@ -43,56 +42,44 @@ int B[numPixels];
 
 
 void setup() {
-  strip2.begin();
-  strip2.clear();
-  strip2.show();
   strip.begin();
   Wire.begin(8);
   Wire.onReceive(receiveEvent);
   Serial.begin(9600);
   strip.show();
-  num = 7;
+  num = 1;
 
-  for (int i = 0; i < numPixels; i++) {
+  for (int i = 0; i <= numPixels; i++) {
 
-    int mmeetthh = numPixels / 6;
-    double meth = 255.0 / mmeetthh;
+    int oneSixth = (int)(numPixels / 6.0);
+    double transitionNum = 255.0 / oneSixth;
 
-    if (i < mmeetthh) {
+    if (i < oneSixth) {
       rainbow[i] = 255;
-      rainbow[i + numPixels] = (int)(meth * i);
+      rainbow[i + numPixels] = (int)(transitionNum * i);
       rainbow[i + numPixels * 2] = 0;
-    } else if (i < mmeetthh * 2) {
-      rainbow[i] = 255 - (int)(meth * (i % mmeetthh));
+    } else if (i < oneSixth * 2) {
+      rainbow[i] = 255 - (int)(transitionNum * (i % oneSixth));
       rainbow[i + numPixels] = 255;
       rainbow[i + numPixels * 2] = 0;
-    } else if (i < mmeetthh * 3) {
+    } else if (i < oneSixth * 3) {
       rainbow[i] = 0;
       rainbow[i + numPixels] = 255;
-      rainbow[i + numPixels * 2] = (int)(meth * (i % mmeetthh));
-    } else if (i < mmeetthh * 4) {
+      rainbow[i + numPixels * 2] = (int)(transitionNum * (i % oneSixth));
+    } else if (i < oneSixth * 4) {
       rainbow[i] = 0;
-      rainbow[i + numPixels] = 255 - (int)(meth * (i % mmeetthh));
+      rainbow[i + numPixels] = 255 - (int)(transitionNum * (i % oneSixth));
       rainbow[i + numPixels * 2] = 255;
-    } else if (i < mmeetthh * 5) {
-      rainbow[i] = (int)(meth * (i % mmeetthh));
+    } else if (i < oneSixth * 5) {
+      rainbow[i] = (int)(transitionNum * (i % oneSixth));
       rainbow[i + numPixels] = 0;
       rainbow[i + numPixels * 2] = 255;
-    } else if (i < mmeetthh * 6) {
+    } else if (i < numPixels) {
       rainbow[i] = 255;
       rainbow[i + numPixels] = 0;
-      rainbow[i + numPixels * 2] = 255 - (int)(meth * (i % mmeetthh));
+      rainbow[i + numPixels * 2] = 255 - (int)(transitionNum * (i % oneSixth));
     }
   }
-
-  //  Sprites[0].pos =
-  //  Sprites->pos =
-  //
-  //  Sprites[1].pos =
-  //  Sprites+1->pos
-  //  for (i = o...
-  //    moveSprite(&sprites[i])
-  //    moveSprite(sprites+i);
 }
 
 void crawling(int r, int g, int b, int r2, int g2, int b2, boolean left)
@@ -456,12 +443,12 @@ void draw2() {
 }
 
 void rainbowThrough(int r, int g, int b, int pos, int offset) {
-  strip.setPixelColor((pos + offset) % numPixels, r, g, b);
+  strip.setPixelColor((pos + offset) % numPixels-1, r, g, b);
 }
 boolean shrink = false;
 
 void loop() {
-  if (loopCounter >= numPixels - 1) {
+  if (loopCounter >= numPixels-1) {
     loopCounter = 0;
     a++;
     strip.show();
@@ -521,6 +508,9 @@ void loop() {
       draw2();
       strip.show();
       delay(20);
+      break;
+    default:
+      num = 1;
       break;
   }
 }
