@@ -14,7 +14,7 @@ typedef struct {
 
 int a = 0;
 
-Spr_mover spr[] = {{0, true, 4, 255, 0, 0},                   {numPixels / 6, true, 5, 0, 255, 0},        {numPixels / 3, true, 4, 0, 0, 255},
+Spr_mover spr[] = {{0, true, 4, 255, 0, 0}, {numPixels / 6, true, 5, 0, 255, 0}, {numPixels / 3, true, 4, 0, 0, 255},
   {numPixels * 2 / 3, false, 5, 255, 255, 0}, {numPixels * 5 / 6, false, 5, 0, 255, 255}, {numPixels, false, 4, 255, 0, 255}
 };
 
@@ -37,9 +37,6 @@ int loopCounter = 0;
 int R[numPixels];
 int G[numPixels];
 int B[numPixels];
-
-
-
 
 void setup() {
   strip.begin();
@@ -123,7 +120,6 @@ void crawling(int r, int g, int b, int r2, int g2, int b2, boolean left)
       {
         if (i % 4 == 0)
         {
-
           strip.setPixelColor(j, r, g, b);
           strip.setPixelColor(j + 1, r2, g2, b2);
           strip.setPixelColor(j + 2, r2, g2, b2);
@@ -164,13 +160,9 @@ void moveSprite(Spr_mover *p) {
     p->pos --;
 }
 
-
-
-
 void party(int location, int mini, int maxi) {
   strip.setPixelColor(location, random(mini, maxi), random(mini, maxi), random(mini, maxi));
 }
-
 
 void setAll(int r, int g, int b) {
   for (int i = 0; i < numPixels; i++) {
@@ -226,32 +218,26 @@ void fadeFromTo(int r, int g, int b, int r2, int g2, int b2) {
 }
 
 void bouncy(Spr_mover *spr) {
-
   if (spr->pos == 0)
     spr->dir = true;
   if (spr->pos == numPixels - 1 - (spr->size))
     spr->dir = false;
-
   moveSprite(spr);
 }
 
 void allBouncy() {
   for (int i = 0; i < SPR_SIZE; i++) {
-
     if (spr[i].pos + spr[i].size == 0)
       spr[i].dir = true;
     if (spr[i].pos == numPixels - 1)
       spr[i].dir = false;
-
     moveSprite(&spr[i]);
   }
 }
 
 void allThrough() {
-
   for (int i = 0; i < SPR_SIZE; i++) {
     moveSprite(&spr[i]);
-
     if (spr[i].pos == numPixels && spr[i].dir)
       spr[i].pos = 0;
     if (spr[i].pos + spr[i].size == 0 && !spr[i].dir)
@@ -260,24 +246,19 @@ void allThrough() {
 }
 
 void loopThrough(Spr_mover *spr) {
-
   moveSprite(spr);
-
   if (spr->pos == numPixels && spr->dir)
     spr->pos = 0;
   if (spr->pos + spr->size == 0 && !spr->dir)
     spr->pos = numPixels - spr->size;
 }
 
-
 void allBouncy2() {
   for (int i = 0; i < SPR_SIZE; i++) {
-
     if (spr[i].pos + spr[i].size == 0)
       spr[i].dir = true;
     if (spr[i].pos == numPixels - 1)
       spr[i].dir = false;
-
     moveSprite(&spr[i]);
   }
 }
@@ -304,7 +285,6 @@ boolean inLocationFade(int pixel) {
       }
       else {
         if (inLoc[var].pos == pixel) {
-
           inLoc[var].r = spr[i].r;
           inLoc[var].g = spr[i].g;
           inLoc[var].b = spr[i].b;
@@ -318,7 +298,6 @@ boolean inLocationFade(int pixel) {
     }
   }
   return (inLoc[0].size != trash.size);
-
 }
 
 boolean inLocation(int pixel) {
@@ -380,8 +359,6 @@ void draw() {
         G[pixel] /= amountInLoc;
         B[pixel] /= amountInLoc;
       }
-
-
     } else {
       R[pixel] = colorBG.r;
       G[pixel] = colorBG.g;
@@ -429,26 +406,23 @@ void draw2() {
           B[pixel] ^= b[i];
         }
       }
-
-
     } else {
       R[pixel] = colorBG.r;
       G[pixel] = colorBG.g;
       B[pixel] = colorBG.b;
     }
     strip.setPixelColor(pixel, R[pixel], G[pixel], B[pixel]);
-
   }
   strip.show();
 }
 
 void rainbowThrough(int r, int g, int b, int pos, int offset) {
-  strip.setPixelColor((pos + offset) % numPixels-1, r, g, b);
+  strip.setPixelColor((pos + offset) % numPixels - 1, r, g, b);
 }
 boolean shrink = false;
 
 void loop() {
-  if (loopCounter >= numPixels-1) {
+  if (loopCounter >= numPixels - 1) {
     loopCounter = 0;
     a++;
     strip.show();
@@ -494,7 +468,7 @@ void loop() {
       for (int i = 0; i < numPixels; i++)
         if (!i <= numPixels / 20.0 * timer)
           strip.setPixelColor(i, 0, 0, 0);
-      
+
       currentTime++;
       if (currentTime % 1 == 0)
         timer -= .25;
